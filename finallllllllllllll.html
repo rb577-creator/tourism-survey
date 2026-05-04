@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turizm So'rovnomasi — Kirish Turizmi</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy: #0f3a6e;
+  --blue: #1a5fa8;
+  --blue-light: #d8eaf8;
+  --bg: #daeaf8;
+  --white: #ffffff;
+  --text: #1a2f4a;
+  --muted: #5b7a9a;
+  --red: #c0392b;
+  --radius: 28px;
+  --card-shadow: 0 8px 40px rgba(15,58,110,0.13);
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px 40px;
+  position: relative;
+}
+
+.bg-circles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.bg-circle { position: absolute; border-radius: 50%; border: 2px solid rgba(26,95,168,0.10); animation: fc 22s infinite ease-in-out; }
+.bg-circle:nth-child(1){width:220px;height:220px;top:-70px;left:-50px;animation-delay:0s}
+.bg-circle:nth-child(2){width:320px;height:320px;top:8%;right:-90px;animation-delay:-6s}
+.bg-circle:nth-child(3){width:160px;height:160px;bottom:12%;left:4%;animation-delay:-12s}
+.bg-circle:nth-child(4){width:260px;height:260px;bottom:-90px;right:8%;animation-delay:-18s}
+.bg-circle:nth-child(5){width:190px;height:190px;top:45%;left:1%;animation-delay:-9s}
+@keyframes fc{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-18px) scale(1.02)}}
+
+.pages { position: relative; z-index: 1; width: 100%; max-width: 560px; }
+.page { display: none; animation: fi .35s ease; }
+.page.active { display: block; }
+@keyframes fi{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.card { background: var(--white); border-radius: var(--radius); box-shadow: var(--card-shadow); overflow: hidden; }
+
+/* HOME */
+.home-header{background:var(--navy);text-align:center;padding:13px 24px;border-radius:50px;margin:0 18px 24px;color:#fff;font-weight:800;font-size:12px;letter-spacing:2px;display:flex;align-items:center;justify-content:center;gap:8px}
+.home-body{padding:28px 30px 34px}
+.home-title{font-size:36px;font-weight:900;color:var(--navy);line-height:1.1;margin-bottom:10px}
+.home-sub{color:var(--muted);font-size:14px;margin-bottom:28px}
+.btn-main{display:flex;align-items:center;justify-content:space-between;width:100%;padding:18px 22px;border-radius:18px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;letter-spacing:1px;transition:transform .15s,box-shadow .15s;margin-bottom:12px}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(26,95,168,.28)}
+.btn-kirish{background:var(--blue);color:#fff;box-shadow:0 4px 16px rgba(26,95,168,.25)}
+.btn-chiqish{background:transparent;color:var(--text);border:2px solid #d0dde8}
+.home-note{text-align:center;color:var(--muted);font-size:12px;margin-top:18px}
+
+/* LOGIN */
+.login-card{padding:34px 30px 38px}
+.back-btn{display:flex;align-items:center;gap:8px;background:none;border:none;color:var(--blue);font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;margin-bottom:24px;padding:0}
+.login-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:24px}
+.field-label{font-size:12px;font-weight:700;color:var(--text);margin-bottom:7px;display:block}
+.field-input{width:100%;padding:14px 18px;border:2px solid #e0eaf5;border-radius:13px;font-family:'Nunito',sans-serif;font-size:15px;color:var(--text);background:#f7fafd;outline:none;transition:border-color .2s;margin-bottom:18px}
+.field-input:focus{border-color:var(--blue);background:#fff}
+.field-input::placeholder{color:#aab8c8}
+.btn-submit{width:100%;padding:16px;background:var(--blue);color:#fff;border:none;border-radius:14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 4px 18px rgba(26,95,168,.28);transition:transform .15s,box-shadow .15s}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,95,168,.35)}
+.login-hint{text-align:center;color:var(--muted);font-size:12px;margin-top:14px}
+.error-msg{background:#fff0f0;border:1.5px solid #f5c2c2;color:var(--red);border-radius:11px;padding:11px 15px;font-size:13px;font-weight:700;margin-bottom:14px;display:none}
+.error-msg.show{display:block}
+
+/* LANG */
+.lang-card{padding:32px 30px 38px}
+.lang-tabs{display:flex;justify-content:flex-end;gap:7px;margin-bottom:26px;flex-wrap:wrap}
+.lang-tab{padding:7px 13px;border-radius:50px;border:1.5px solid #cdd9e8;background:transparent;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .18s}
+.lang-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.lang-tab:not(.active):hover{border-color:var(--blue);color:var(--blue)}
+.welcome-box{background:#f2f8ff;border-radius:16px;padding:24px 22px;margin-bottom:26px}
+.welcome-title{font-size:17px;font-weight:900;color:var(--navy);text-transform:uppercase;margin-bottom:11px;text-align:center}
+.welcome-text{font-size:13px;color:var(--text);line-height:1.65;text-align:center;margin-bottom:10px}
+.welcome-conf{font-size:12px;font-style:italic;color:var(--muted);text-align:center}
+.btn-start{width:100%;padding:17px;background:var(--blue);color:#fff;border:none;border-radius:15px;font-family:'Nunito',sans-serif;font-weight:900;font-size:16px;letter-spacing:2px;cursor:pointer;box-shadow:0 4px 18px rgba(26,95,168,.28);transition:transform .15s,box-shadow .15s;text-transform:uppercase}
+.btn-start:hover{transform:translateY(-2px)}
+
+/* SURVEY */
+.survey-header{background:var(--navy);color:#fff;padding:18px 26px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.survey-type-label{font-weight:800;font-size:12px;letter-spacing:1.5px;white-space:nowrap}
+.progress-wrap{flex:1}
+.prog-bg{background:rgba(255,255,255,.25);border-radius:10px;height:6px}
+.prog-fill{background:#fff;border-radius:10px;height:6px;transition:width .4s ease}
+.prog-lbl{font-size:11px;margin-top:4px;color:rgba(255,255,255,.7);text-align:right}
+
+.survey-body{padding:26px 28px 12px}
+.q-badge{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:800;letter-spacing:1.5px;padding:4px 11px;border-radius:50px;margin-bottom:12px;text-transform:uppercase}
+.q-title{font-size:16px;font-weight:800;color:var(--text);line-height:1.45;margin-bottom:6px}
+.q-sub{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5}
+
+/* Options */
+.opt-list{list-style:none;display:flex;flex-direction:column;gap:8px}
+.opt-item{display:flex;align-items:center;gap:12px;padding:13px 16px;border:2px solid #e0eaf5;border-radius:13px;cursor:pointer;transition:all .16s;font-weight:600;font-size:14px;color:var(--text)}
+.opt-item:hover{border-color:var(--blue);background:#f0f7ff}
+.opt-item.selected{border-color:var(--blue);background:#e8f2ff;color:var(--blue)}
+.opt-dot{width:19px;height:19px;border-radius:50%;border:2px solid #cdd9e8;flex-shrink:0;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.opt-item.selected .opt-dot{background:var(--blue);border-color:var(--blue)}
+.opt-item.selected .opt-dot::after{content:'';width:7px;height:7px;background:#fff;border-radius:50%}
+.opt-sq{width:19px;height:19px;border-radius:5px;border:2px solid #cdd9e8;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.opt-item.checked .opt-sq{background:var(--blue);border-color:var(--blue)}
+.opt-item.checked .opt-sq::after{content:'✓';color:#fff;font-size:12px;font-weight:900}
+.opt-item.checked{border-color:var(--blue);background:#e8f2ff;color:var(--blue)}
+
+/* Search + Country list */
+.search-wrap{position:relative;margin-bottom:10px}
+.search-input{width:100%;padding:12px 16px 12px 40px;border:2px solid #e0eaf5;border-radius:13px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--text);background:#f7fafd;outline:none;transition:border-color .2s}
+.search-input:focus{border-color:var(--blue);background:#fff}
+.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--muted)}
+.country-list{max-height:250px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;border:2px solid #e0eaf5;border-radius:13px;padding:8px;background:#fff}
+.country-list::-webkit-scrollbar{width:6px}
+.country-list::-webkit-scrollbar-thumb{background:#cdd9e8;border-radius:3px}
+
+/* Text inputs */
+.survey-input{width:100%;padding:13px 16px;border:2px solid #e0eaf5;border-radius:13px;font-family:'Nunito',sans-serif;font-size:15px;color:var(--text);background:#f7fafd;outline:none;transition:border-color .2s;margin-bottom:8px}
+.survey-input:focus{border-color:var(--blue);background:#fff}
+.survey-input::placeholder{color:#aab8c8}
+.inline-fields{display:flex;gap:10px;flex-wrap:wrap}
+.inline-fields .survey-input{flex:1;min-width:110px}
+
+/* Places */
+.places-grid{display:flex;flex-direction:column;gap:8px}
+.place-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border:2px solid #e0eaf5;border-radius:12px;transition:border-color .15s;cursor:pointer}
+.place-row:hover{border-color:#b0ccee}
+.place-row.checked{border-color:var(--blue);background:#f0f7ff}
+.place-sq{width:19px;height:19px;border-radius:5px;border:2px solid #cdd9e8;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.place-row.checked .place-sq{background:var(--blue);border-color:var(--blue)}
+.place-row.checked .place-sq::after{content:'✓';color:#fff;font-size:11px;font-weight:900}
+.place-name{flex:1;font-weight:700;font-size:14px;color:var(--text)}
+.place-nights{display:none;align-items:center;gap:6px}
+.place-row.checked .place-nights{display:flex}
+.place-nights input{width:68px;padding:6px 10px;border:2px solid #cdd9e8;border-radius:9px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;text-align:center;outline:none;color:var(--blue)}
+.place-nights input:focus{border-color:var(--blue)}
+.place-nights span{font-size:12px;color:var(--muted)}
+
+/* Expense table */
+.exp-wrap{border-radius:14px;overflow:hidden;border:2px solid #e0eaf5}
+.exp-head{display:grid;grid-template-columns:1fr 34px 130px 110px;gap:6px;background:var(--navy);color:#fff;padding:10px 12px;font-size:11px;font-weight:700;letter-spacing:.5px;align-items:center}
+.exp-row{display:grid;grid-template-columns:1fr 34px 130px 110px;gap:6px;padding:9px 10px;align-items:center;border-top:1px solid #e8f0f8;transition:background .15s}
+.exp-row:hover{background:#f7fafd}
+.exp-row.mandatory-row{background:#fff8f0}
+.exp-name{font-size:11px;font-weight:600;color:var(--text);line-height:1.4}
+.exp-num{font-size:12px;font-weight:800;color:var(--navy);margin-bottom:2px}
+.exp-chk{display:flex;align-items:center;justify-content:center}
+.exp-chk input[type=checkbox]{width:16px;height:16px;accent-color:var(--blue);cursor:pointer}
+.exp-inp{padding:7px 9px;border:1.5px solid #e0eaf5;border-radius:9px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--text);background:#f7fafd;outline:none;width:100%;transition:border-color .15s}
+.exp-inp:focus{border-color:var(--blue);background:#fff}
+.exp-inp.mand{border-color:#f0a060;background:#fff8f0}
+.exp-sel{padding:7px 8px;border:1.5px solid #e0eaf5;border-radius:9px;font-family:'Nunito',sans-serif;font-size:12px;color:var(--text);background:#f7fafd;outline:none;width:100%;cursor:pointer}
+
+/* Rating */
+.rating-section{display:flex;flex-direction:column;gap:16px}
+.rating-row{display:flex;flex-direction:column;gap:8px}
+.rating-label{font-size:13px;font-weight:700;color:var(--text)}
+.rating-nums{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.rating-btn{width:36px;height:36px;border:2px solid #e0eaf5;border-radius:9px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--muted);background:#f7fafd;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.rating-btn:hover{border-color:var(--blue);color:var(--blue);background:#f0f7ff}
+.rating-btn.picked{background:var(--blue);border-color:var(--blue);color:#fff}
+.rating-na{font-size:11px;font-weight:700;color:var(--muted);padding:6px 10px;border:1.5px solid #ddd;border-radius:7px;cursor:pointer;background:#f7fafd;transition:all .15s;margin-left:4px}
+.rating-na.picked{background:#e8e8e8;border-color:#999;color:#555}
+
+/* Sub-options for Q12 */
+.sub-opts{margin:10px 0 0 30px;display:flex;flex-direction:column;gap:7px;animation:fi .25s ease}
+.sub-opt{display:flex;align-items:center;gap:10px;padding:11px 15px;border:2px solid #e8f3ff;border-radius:12px;cursor:pointer;font-size:13px;font-weight:700;color:var(--blue);background:#f2f8ff;transition:all .15s}
+.sub-opt:hover{border-color:var(--blue);background:#e0f0ff}
+.sub-opt.selected{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* Y/N */
+.yn-group{display:flex;gap:10px;margin-top:16px}
+.yn-btn{flex:1;padding:15px;border:2px solid #e0eaf5;border-radius:13px;font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;cursor:pointer;color:var(--text);background:#f7fafd;transition:all .15s}
+.yn-btn:hover{border-color:var(--blue);background:#f0f7ff}
+.yn-btn.selected{border-color:var(--blue);background:var(--blue);color:#fff}
+
+/* Note box */
+.note-box{background:#fffbf0;border:1.5px solid #f0d080;border-radius:11px;padding:11px 14px;font-size:12px;color:#7a6020;line-height:1.5;margin-bottom:14px;display:flex;gap:8px;align-items:flex-start}
+
+/* Nav */
+.survey-nav{display:flex;gap:10px;padding:18px 28px 26px}
+.btn-prev{flex:1;padding:14px;background:transparent;border:2px solid #d0dde8;border-radius:13px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;color:var(--text);cursor:pointer;transition:all .15s}
+.btn-prev:hover{border-color:var(--blue);color:var(--blue)}
+.btn-next{flex:2.5;padding:14px;background:var(--blue);border:none;border-radius:13px;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;color:#fff;cursor:pointer;box-shadow:0 4px 14px rgba(26,95,168,.25);transition:all .15s}
+.btn-next:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,95,168,.32)}
+.val-err{background:#fff0f0;border:1.5px solid #f5c2c2;color:var(--red);border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;margin:0 28px 4px;display:none}
+.val-err.show{display:block}
+
+/* End / Success */
+.end-card{padding:44px 30px;text-align:center}
+.end-icon{font-size:52px;margin-bottom:18px}
+.end-title{font-size:22px;font-weight:900;color:var(--navy);margin-bottom:12px}
+.end-sub{color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:28px}
+.btn-restart{padding:15px 34px;background:var(--blue);color:#fff;border:none;border-radius:13px;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;cursor:pointer;box-shadow:0 4px 16px rgba(26,95,168,.25);transition:all .15s}
+.btn-restart:hover{transform:translateY(-2px)}
+
+@media(max-width:500px){
+  .home-title{font-size:28px}
+  .home-body,.login-card,.lang-card{padding:22px 18px 28px}
+  .survey-body{padding:20px 18px 12px}
+  .survey-nav{padding:14px 18px 22px}
+  .val-err{margin:0 18px 4px}
+  .exp-head,.exp-row{grid-template-columns:1fr 28px 110px 90px}
+  .rating-btn{width:31px;height:31px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-circles">
+  <div class="bg-circle"></div><div class="bg-circle"></div>
+  <div class="bg-circle"></div><div class="bg-circle"></div>
+  <div class="bg-circle"></div>
+</div>
+
+<div class="pages">
+
+  <!-- HOME -->
+  <div class="page" id="page-home">
+    <div class="home-header">🇺🇿 &nbsp;UZBEKISTAN TOURISM</div>
+    <div class="card">
+      <div class="home-body">
+        <h1 class="home-title">Turizm<br>So'rovnomasi</h1>
+        <p class="home-sub">Sayohat tajribangizni yaxshilashga yordam bering</p>
+        <button class="btn-main btn-kirish" onclick="selectType('kirish')">
+          <span>KIRISH TURIZMI</span><span>→</span>
+        </button>
+        <button class="btn-main btn-chiqish" onclick="selectType('chiqish')">
+          <span>CHIQISH TURIZMI</span><span style="transform:rotate(-45deg)">↗</span>
+        </button>
+        <p class="home-note">⏱ 5–7 daqiqa vaqt oladi</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="page" id="page-login">
+    <div class="card">
+      <div class="login-card">
+        <button class="back-btn" onclick="goTo('page-home')">
+          <svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+          Orqaga
+        </button>
+        <h2 class="login-title">Hisobga kirish</h2>
+        <div class="error-msg" id="err-login">Login yoki parol noto'g'ri!</div>
+        <label class="field-label">Login (Post kodi)</label>
+        <input type="text" class="field-input" id="inp-login" placeholder="Post kodini kiriting" inputmode="numeric">
+        <label class="field-label">Parol</label>
+        <input type="password" class="field-input" id="inp-pass" placeholder="••••••••">
+        <button class="btn-submit" onclick="doLogin()">Kirish</button>
+        <p class="login-hint">Kirish turizmi paroli: <b>12345</b> &nbsp;|&nbsp; Chiqish: <b>54321</b></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LANG / WELCOME -->
+  <div class="page" id="page-lang">
+    <div class="card">
+      <div class="lang-card">
+        <div class="lang-tabs">
+          <button class="lang-tab" onclick="setLang('uz')" id="tab-uz">🇺🇿 O'zbek</button>
+          <button class="lang-tab" onclick="setLang('ru')" id="tab-ru">🇷🇺 Русский</button>
+          <button class="lang-tab active" onclick="setLang('en')" id="tab-en">🇬🇧 English</button>
+        </div>
+        <div class="welcome-box">
+          <div class="welcome-title" id="wlc-title">DEAR TRAVELER,</div>
+          <p class="welcome-text" id="wlc-text">We kindly ask you to participate in this survey, which is carried out for the purpose of the study of tourism development, building the tourism satellite account and the study of tourism development in Uzbekistan. We ask you to assist us by answering all questions included in this questionnaire.</p>
+          <p class="welcome-conf" id="wlc-conf">Confidentiality of your responses is guaranteed by the law of the Republic of Uzbekistan "On Official Statistics".</p>
+        </div>
+        <button class="btn-start" id="btn-start" onclick="startSurvey()">START</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SURVEY -->
+  <div class="page" id="page-survey">
+    <div class="card">
+      <div class="survey-header">
+        <div class="survey-type-label" id="s-type-lbl">KIRISH TURIZMI</div>
+        <div class="progress-wrap">
+          <div class="prog-bg"><div class="prog-fill" id="prog-fill" style="width:5%"></div></div>
+          <div class="prog-lbl" id="prog-lbl">1 / 17</div>
+        </div>
+      </div>
+      <div class="survey-body" id="survey-body"></div>
+      <div class="val-err" id="val-err">Iltimos, javobni tanlang yoki kiriting.</div>
+      <div class="survey-nav">
+        <button class="btn-prev" id="btn-prev" onclick="prevQ()">← Orqaga</button>
+        <button class="btn-next" id="btn-next" onclick="nextQ()">Keyingi →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENDED (Uzbekistan selected) -->
+  <div class="page" id="page-ended">
+    <div class="card">
+      <div class="end-card">
+        <div class="end-icon">🚫</div>
+        <h2 class="end-title">So'rovnoma yakunlandi</h2>
+        <p class="end-sub">O'zbekiston fuqarolari uchun ushbu so'rovnoma mo'ljallanmagan. Ishtirokingiz uchun rahmat!</p>
+        <button class="btn-restart" onclick="restart()">Bosh sahifaga qaytish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="page" id="page-success">
+    <div class="card">
+      <div class="end-card">
+        <div class="end-icon">✅</div>
+        <h2 class="end-title">Rahmat!</h2>
+        <p class="end-sub">Sizning javoblaringiz muvaffaqiyatli saqlandi. Ishtirokingiz uchun katta rahmat!</p>
+        <button class="btn-restart" onclick="restart()">Bosh sahifaga qaytish</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ════ STATE ════
+var tourType='kirish', currentLang='en', loginCode='', isAirport=false;
+var currentQIdx=0, answers={};
+
+var AIRPORT_LOGINS=['1140','1180','1330','1260'];
+var ALL_LOGINS=['3350','2030','2060','1140','2180','1180','2220','2221','3270','2270','2271','1330','1260'];
+
+var COUNTRIES=[
+  'Afghanistan','Armenia','Azerbaijan','Belarus','China','France','Georgia',
+  'Germany','India','Indonesia','Iran','Israel','Italy','Japan','Kazakhstan',
+  'Kyrgyzstan','Malaysia','Netherlands','Russia','South Korea','Spain','Tajikistan',
+  'Turkey','Turkmenistan','Ukraine','United Kingdom','United States','Uzbekistan','Vietnam','Other'
+];
+
+var T={
+  en:{title:'DEAR TRAVELER,',text:'We kindly ask you to participate in this survey, which is carried out for the purpose of the study of tourism development, building the tourism satellite account and the study of tourism development in Uzbekistan. We ask you to assist us by answering all questions included in this questionnaire.',conf:'Confidentiality of your responses is guaranteed by the law of the Republic of Uzbekistan "On Official Statistics".',start:'START'},
+  uz:{title:"HURMATLI SAYOHATCHIMIZ,",text:"Sizni ushbu so'rovnomada ishtirok etishingizni so'raymiz. So'rovnoma O'zbekistonda turizmni rivojlantirish maqsadida o'tkazilmoqda.",conf:"Javoblaringizning maxfiyligi O'zbekiston Respublikasining \"Rasmiy statistika to'g'risida\"gi qonuni bilan kafolatlangan.",start:'BOSHLASH'},
+  ru:{title:'УВАЖАЕМЫЙ ПУТЕШЕСТВЕННИК,',text:'Мы просим вас принять участие в данном опросе, который проводится в целях изучения развития туризма в Узбекистане.',conf:'Конфиденциальность ваших ответов гарантируется законом Республики Узбекистан «Об официальной статистике».',start:'НАЧАТЬ'}
+};
+
+// ════ SEQUENCE ════
+function buildSeq(){
+  var seq=['q1','q2','q3'];
+  var p=answers.q3;
+  if(p==='transit'){ seq.push('q15','q16','q17'); return seq; }
+  if(p==='business') seq.push('q4');
+  seq.push('q5');
+  var zeroNights=answers.q5_zero===true;
+  if(!zeroNights){ seq.push('q6','q7','q8'); if(answers.q8==='yes') seq.push('q9','q10','q11'); }
+  seq.push('q12');
+  if(isAirport) seq.push('q13');
+  if(p==='employment') seq.push('q14');
+  seq.push('q15','q16','q17');
+  return seq;
+}
+
+// ════ NAV ════
+function goTo(id){ document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')}); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+
+function selectType(type){ tourType=type; document.getElementById('err-login').classList.remove('show'); document.getElementById('inp-login').value=''; document.getElementById('inp-pass').value=''; goTo('page-login'); }
+
+function doLogin(){
+  var login=document.getElementById('inp-login').value.trim();
+  var pass=document.getElementById('inp-pass').value.trim();
+  var vp=tourType==='kirish'?'12345':'54321';
+  if(ALL_LOGINS.indexOf(login)>=0 && pass===vp){
+    loginCode=login; isAirport=AIRPORT_LOGINS.indexOf(login)>=0;
+    document.getElementById('err-login').classList.remove('show');
+    goTo('page-lang');
+  } else { document.getElementById('err-login').classList.add('show'); }
+}
+document.getElementById('inp-pass').addEventListener('keydown',function(e){ if(e.key==='Enter') doLogin(); });
+
+function setLang(lang){
+  currentLang=lang;
+  document.querySelectorAll('.lang-tab').forEach(function(t){t.classList.remove('active')});
+  document.getElementById('tab-'+lang).classList.add('active');
+  var t=T[lang];
+  document.getElementById('wlc-title').textContent=t.title;
+  document.getElementById('wlc-text').textContent=t.text;
+  document.getElementById('wlc-conf').textContent=t.conf;
+  document.getElementById('btn-start').textContent=t.start;
+}
+
+function startSurvey(){
+  answers={}; currentQIdx=0;
+  document.getElementById('s-type-lbl').textContent=tourType==='kirish'?'KIRISH TURIZMI':'CHIQISH TURIZMI';
+  renderQ(); goTo('page-survey');
+}
+
+function prevQ(){ if(currentQIdx>0){ currentQIdx--; renderQ(); } }
+
+function nextQ(){
+  var seq=buildSeq(), qId=seq[currentQIdx];
+  if(!validateQ(qId)) return;
+  hideErr();
+  if(currentQIdx<seq.length-1){ currentQIdx++; renderQ(); }
+  else goTo('page-success');
+}
+
+function showErr(msg){ var el=document.getElementById('val-err'); el.textContent=msg||'Iltimos, javobni tanlang.'; el.classList.add('show'); }
+function hideErr(){ document.getElementById('val-err').classList.remove('show'); }
+
+// ════ VALIDATE ════
+function validateQ(qId){
+  if(qId==='q1'){ if(!answers.q1){showErr('Iltimos, davlatni tanlang.');return false;} return true; }
+  if(qId==='q2'){ if(!answers.q2){showErr('Iltimos, javobni tanlang.');return false;} if(answers.q2==='other'&&!answers.q2_country){showErr("Iltimos, pasport davlatini tanlang.");return false;} return true; }
+  if(qId==='q3'){ if(!answers.q3){showErr('Iltimos, maqsadni tanlang.');return false;} return true; }
+  if(qId==='q4'){ if(!answers.q4){showErr('Iltimos, biznes maqsadini tanlang.');return false;} return true; }
+  if(qId==='q5'){ if(!answers.q5_zero&&(!answers.q5_nights||answers.q5_nights==='')){showErr("Tunlar sonini kiriting yoki '0 kecha' ni belgilang.");return false;} return true; }
+  if(qId==='q7'){ if(!answers.q7){showErr('Iltimos, turar joy turini tanlang.');return false;} return true; }
+  if(qId==='q8'){ if(!answers.q8){showErr("Ha yoki Yo'q ni tanlang.");return false;} return true; }
+  if(qId==='q12'){ if(!answers.q12){showErr('Iltimos, transport turini tanlang.');return false;} if(answers.q12==='airplane'&&!answers.q12_airline){showErr("Iltimos, aviakompaniyani tanlang.");return false;} return true; }
+  if(qId==='q13'){ if(!answers.q13){showErr('Iltimos, aviakompaniyani tanlang.');return false;} return true; }
+  if(qId==='q14'){ if(!answers.q14){showErr('Iltimos, javobni tanlang.');return false;} return true; }
+  if(qId==='q15'){ if(!answers.q15_sum||!answers.q15_currency){showErr("Summa va valyutani kiriting.");return false;} return true; }
+  return true;
+}
+
+// ════ RENDER ════
+function renderQ(){
+  var seq=buildSeq(), qId=seq[currentQIdx], total=seq.length;
+  var pct=Math.round(((currentQIdx+1)/total)*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-lbl').textContent=(currentQIdx+1)+' / '+total;
+  document.getElementById('btn-prev').style.visibility=currentQIdx===0?'hidden':'visible';
+  document.getElementById('btn-next').textContent=currentQIdx===total-1?'Yakunlash ✓':'Keyingi →';
+  hideErr();
+  var renderers={q1:rQ1,q2:rQ2,q3:rQ3,q4:rQ4,q5:rQ5,q6:rQ6,q7:rQ7,q8:rQ8,q9:rQ9,q10:rQ10,q11:rQ11,q12:rQ12,q13:rQ13,q14:rQ14,q15:rQ15,q16:rQ16,q17:rQ17};
+  document.getElementById('survey-body').innerHTML=(renderers[qId]||function(){return'';})();
+  window.scrollTo(0,0);
+}
+
+// ── Q1 ──
+function rQ1(){
+  var sel=answers.q1||'';
+  return '<div class="q-badge">Savol 1 / 17</div>'+
+    '<div class="q-title">What is the name of the country where you live?</div>'+
+    '<div class="q-sub">Single answer only — Quyidagi ro\'yxatdan davlatingizni tanlang</div>'+
+    '<div class="search-wrap"><span class="search-icon">🔍</span>'+
+    '<input type="text" class="search-input" id="csr1" placeholder="Davlatni qidiring..." oninput="filterC(\'clist1\',this.value)"></div>'+
+    '<div class="country-list" id="clist1">'+
+    COUNTRIES.map(function(c){
+      return '<div class="opt-item'+(sel===c?' selected':'')+'" onclick="selC1(this,\''+c+'\')"><span class="opt-dot"></span>'+c+'</div>';
+    }).join('')+'</div>';
+}
+
+function selC1(el,c){
+  answers.q1=c;
+  document.querySelectorAll('#clist1 .opt-item').forEach(function(e){e.classList.remove('selected')});
+  el.classList.add('selected');
+  if(c==='Uzbekistan') setTimeout(function(){goTo('page-ended')},400);
+}
+
+// ── Q2 ──
+function rQ2(){
+  var v=answers.q2||'', sel2=answers.q2_country||'';
+  var sub='';
+  if(v==='other'){
+    sub='<div style="margin-top:14px">'+
+      '<div class="q-sub">Qaysi davlat pasporti ishlatildi:</div>'+
+      '<div class="search-wrap"><span class="search-icon">🔍</span>'+
+      '<input type="text" class="search-input" id="csr2" placeholder="Davlatni qidiring..." oninput="filterC(\'clist2\',this.value)"></div>'+
+      '<div class="country-list" id="clist2">'+
+      COUNTRIES.map(function(c){
+        return '<div class="opt-item'+(sel2===c?' selected':'')+'" onclick="selC2(this,\''+c+'\')"><span class="opt-dot"></span>'+c+'</div>';
+      }).join('')+'</div></div>';
+  }
+  return '<div class="q-badge">Savol 2 / 17</div>'+
+    '<div class="q-title">Which country\'s passport did you use when departing?</div>'+
+    '<div class="q-sub">Single answer only</div>'+
+    '<ul class="opt-list">'+
+    '<li class="opt-item'+(v==='same'?' selected':'')+'" onclick="pickQ2(\'same\',this)"><span class="opt-dot"></span>Same as country of residence</li>'+
+    '<li class="opt-item'+(v==='other'?' selected':'')+'" onclick="pickQ2(\'other\',this)"><span class="opt-dot"></span>Other</li>'+
+    '</ul>'+sub;
+}
+
+function pickQ2(val,el){
+  answers.q2=val;
+  document.querySelectorAll('#survey-body > ul .opt-item').forEach(function(e){e.classList.remove('selected')});
+  el.classList.add('selected');
+  renderQ();
+}
+function selC2(el,c){
+  answers.q2_country=c;
+  document.querySelectorAll('#clist2 .opt-item').forEach(function(e){e.classList.remove('selected')});
+  el.classList.add('selected');
+  if(c==='Uzbekistan') setTimeout(function(){goTo('page-ended')},400);
+}
+
+// ── Q3 ──
+function rQ3(){
+  var v=answers.q3||'', isAfg=answers.q1==='Afghanistan';
+  var opts=[
+    {val:'leisure',   lbl:'Holiday, leisure, and recreation'},
+    {val:'friends',   lbl:'Visiting friends and relatives'},
+    {val:'business',  lbl:'Business and professional (meetings, conferences, training)',note:'→ Q4 opens'},
+    {val:'education', lbl:'Education and training (short courses less than 12 months)'},
+    {val:'health',    lbl:'Health and medical treatment'},
+    {val:'religion',  lbl:'Religion and pilgrimage'},
+    {val:'shopping',  lbl:'Shopping'},
+    {val:'employment',lbl:'Employment / Paid work in Uzbekistan',note:'→ Q14 opens'},
+    {val:'transit',   lbl:'Transit (passing through to another country)',note:'→ Q15 directly'},
+    {val:'other',     lbl:'Other'},
+  ];
+  if(isAfg) opts.push({val:'termiz',lbl:'To go to the Termiz trade center'});
+  return '<div class="q-badge">Savol 3 / 17</div>'+
+    '<div class="q-title">What is the main purpose for your visit to Uzbekistan?</div>'+
+    '<div class="q-sub">Please select the one option that best describes why you came to Uzbekistan this time.</div>'+
+    '<ul class="opt-list">'+
+    opts.map(function(o){
+      var note=o.note?'<span style="font-size:11px;color:#888;font-weight:600;margin-left:6px">'+o.note+'</span>':'';
+      return '<li class="opt-item'+(v===o.val?' selected':'')+'" onclick="pickQ3(\''+o.val+'\',this)"><span class="opt-dot"></span>'+o.lbl+note+'</li>';
+    }).join('')+'</ul>';
+}
+
+function pickQ3(val,el){
+  answers.q3=val;
+  document.querySelectorAll('#survey-body .opt-list .opt-item').forEach(function(e){e.classList.remove('selected')});
+  el.classList.add('selected');
+}
+
+// ── Q4 ──
+function rQ4(){
+  var v=answers.q4||'';
+  var opts=[
+    {val:'exhibition',lbl:'Exhibition / Buying goods with the aim of resale',note:'⭐ Q16 row 13 majburiy'},
+    {val:'corporate', lbl:'Corporate / Business Meeting, Seminar, Workshop or Presentation'},
+    {val:'incentive', lbl:'Incentive tour organized by a business'},
+    {val:'conference',lbl:'Conference, Congress, Forum'},
+  ];
+  var note=v==='exhibition'?'<div class="note-box">16-savoldagi 13-qator (qayta sotish uchun tovar qiymati) to\'ldirilishi majburiy hisoblanadi.</div>':'';
+  return '<div class="q-badge">Savol 4 / 17</div>'+
+    '<div class="q-title">Please tell me, what was the main purpose of your business/professional visit to Uzbekistan?</div>'+
+    '<div class="q-sub">Single answer only</div>'+note+
+    '<ul class="opt-list">'+
+    opts.map(function(o){
+      var n=o.note?'<span style="font-size:11px;color:#e08030;font-weight:700;margin-left:6px">'+o.note+'</span>':'';
+      return '<li class="opt-item'+(v===o.val?' selected':'')+'" onclick="pickQ4(\''+o.val+'\',this)"><span class="opt-dot"></span>'+o.lbl+n+'</li>';
+    }).join('')+'</ul>';
+}
+
+function pickQ4(val,el){
+  answers.q4=val;
+  document.querySelectorAll('#survey-body .opt-list .opt-item').forEach(function(e){e.classList.remove('selected')});
+  el.classList.add('selected');
+  renderQ();
+}
+
+// ── Q5 ──
+function rQ5(){
+  var zero=answers.q5_zero===true, nights=answers.q5_nights||'';
+  return '<div class="q-badge">Savol 5 / 17</div>'+
+    '<div class="q-title">How many nights did you stay in Uzbekistan?</div>'+
+    '<div class="q-sub">Tunlar sonini kiriting</div>'+
+    '<input type="number" class="survey-input" id="q5n" value="'+nights+'" min="1" placeholder="Tunlar soni..." '+(zero?'disabled':'')+' oninput="answers.q5_nights=this.value">'+
+    '<div style="margin-top:10px">'+
+    '<label class="opt-item'+(zero?' checked':'')+'" style="cursor:pointer" onclick="toggleZero()">'+
+    '<span class="opt-sq"></span>0 nights (arrived and left same day) → skips to Question 12</label></div>';
+}
+function toggleZero(){
+  answers.q5_zero=!answers.q5_zero;
+  if(answers.q5_zero){answers.q5_nights='0';}
+  renderQ();
+}
+
+// ── Q6 ──
+var PLACES=['Tashkent','Samarkand','Bukhara','Khiva','Shakhrisabz','Termez','Kokand','Other'];
+function rQ6(){
+  var ck=answers.q6||{};
+  return '<div class="q-badge">Savol 6 / 17</div>'+
+    '<div class="q-title">Please tell me: which places did you visit during this trip, and how many nights did you spend in each?</div>'+
+    '<div class="q-sub">Bir nechta tanlov mumkin</div>'+
+    '<div class="places-grid">'+
+    PLACES.map(function(p){
+      var ch=!!ck[p], nights=(ck[p]&&ck[p].nights)||'';
+      return '<div class="place-row'+(ch?' checked':'')+'" id="pr-'+p+'" onclick="togglePlace(\''+p+'\')">'+
+        '<div class="place-sq"></div>'+
+        '<div class="place-name">'+p+'</div>'+
+        '<div class="place-nights">'+
+        '<input type="number" min="0" value="'+nights+'" placeholder="0" onclick="event.stopPropagation()" oninput="setPN(\''+p+'\',this.value)">'+
+        '<span>kecha</span></div></div>';
+    }).join('')+'</div>';
+}
+function togglePlace(p){
+  if(!answers.q6) answers.q6={};
+  if(answers.q6[p]) delete answers.q6[p];
+  else answers.q6[p]={nights:''};
+  renderQ();
+}
+function setPN(p,v){
+  if(!answers.q6) answers.q6={};
+  if(!answers.q6[p]) answers.q6[p]={};
+  answers.q6[p].nights=v;
+}
+
+// ── Q7 ──
+function rQ7(){
+  var v=answers.q7||'';
+  var opts=['Hotel, motel, hostel, or guesthouse (paid commercial lodging)','Rented apartment, house, or villa (e.g., Airbnb, private rental)','Staying with friends or relatives (free of charge)','Own property or second home (owned by you or your immediate family in Uzbekistan)','Sanatorium, health resort, or spa facility','Camping / Recreational vehicle','Other paid accommodation'];
+  return '<div class="q-badge">Savol 7 / 17</div>'+
+    '<div class="q-title">What type of accommodation did you primarily use during your time in Uzbekistan?</div>'+
+    '<div class="q-sub">Choose the one where you stayed the most nights.</div>'+
+    '<ul class="opt-list">'+
+    opts.map(function(o,i){
+      return '<li class="opt-item'+(v===String(i)?' selected':'')+'" onclick="pickSingle(\'q7\',\''+i+'\',this)"><span class="opt-dot"></span>'+o+'</li>';
+    }).join('')+'</ul>';
+}
+
+// ── Q8 ──
+function rQ8(){
+  var v=answers.q8||'';
+  return '<div class="q-badge">Savol 8 / 17</div>'+
+    '<div class="q-title">Please tell me, have you traveled on this visit to Uzbekistan on a package tour?</div>'+
+    '<div class="q-sub">Agar "Ha" deb javob berilsa, 9-11 savollar ochiladi. "Yo\'q" deb javob berilsa, 12-savolga o\'tiladi.</div>'+
+    '<div class="yn-group">'+
+    '<button class="yn-btn'+(v==='yes'?' selected':'')+'" onclick="pickYN(\'yes\',this)">✅ Ha (Yes)</button>'+
+    '<button class="yn-btn'+(v==='no'?' selected':'')+'" onclick="pickYN(\'no\',this)">❌ Yo\'q (No) → Q12</button>'+
+    '</div>';
+}
+function pickYN(val,el){
+  answers.q8=val;
+  document.querySelectorAll('.yn-btn').forEach(function(b){b.classList.remove('selected')});
+  el.classList.add('selected');
+}
+
+// ── Q9 ──
+function rQ9(){
+  return '<div class="q-badge">Savol 9 / 17</div>'+
+    '<div class="q-title">How many nights did the package tour cover in total, and how many of those nights were spent in Uzbekistan?</div>'+
+    '<label class="field-label" style="margin-top:4px">Jami tunlar soni (Total nights)</label>'+
+    '<input type="number" class="survey-input" value="'+(answers.q9_total||'')+'" min="0" placeholder="Jami tunlar..." oninput="answers.q9_total=this.value">'+
+    '<label class="field-label">O\'zbekistonda tunlar soni (Nights in Uzbekistan)</label>'+
+    '<input type="number" class="survey-input" value="'+(answers.q9_uz||'')+'" min="0" placeholder="O\'zbekistonda tunlar..." oninput="answers.q9_uz=this.value">';
+}
+
+// ── Q10 ──
+function rQ10(){
+  return '<div class="q-badge">Savol 10 / 17</div>'+
+    '<div class="q-title">Including you, how many people did the package tour cover?</div>'+
+    '<input type="number" class="survey-input" value="'+(answers.q10||'')+'" min="1" placeholder="Shaxslar soni..." oninput="answers.q10=this.value">';
+}
+
+// ── Q11 ──
+function rQ11(){
+  return '<div class="q-badge">Savol 11 / 17</div>'+
+    '<div class="q-title">How much did you pay for this tour?</div>'+
+    '<div class="q-sub">Please specify amount and currency of payment</div>'+
+    '<div class="inline-fields">'+
+    '<input type="number" class="survey-input" style="flex:2" value="'+(answers.q11_amount||'')+'" placeholder="Miqdor (Amount)..." oninput="answers.q11_amount=this.value">'+
+    '<input type="text" class="survey-input" style="flex:1" value="'+(answers.q11_currency||'')+'" placeholder="Valyuta..." oninput="answers.q11_currency=this.value">'+
+    '</div>';
+}
+
+// ── Q12 ──
+function rQ12(){
+  var v=answers.q12||'', al=answers.q12_airline||'';
+  var sub='';
+  if(v==='airplane'){
+    sub='<div class="sub-opts">'+
+      '<div class="sub-opt'+(al==='uzair'?' selected':'')+'" onclick="pickAirline(\'uzair\',this)">✈️ Uzbekistan Airways</div>'+
+      '<div class="sub-opt'+(al==='other'?' selected':'')+'" onclick="pickAirline(\'other\',this)">🌐 Other (non-Uzbek) airlines</div>'+
+      '</div>';
+  }
+  return '<div class="q-badge">Savol 12 / 17</div>'+
+    '<div class="q-title">Which means of transport did you use to ARRIVE in Uzbekistan?</div>'+
+    '<div class="q-sub">Please select one main option</div>'+
+    '<ul class="opt-list">'+
+    '<li class="opt-item'+(v==='airplane'?' selected':'')+'" onclick="pickQ12(\'airplane\',this)"><span class="opt-dot"></span>✈️ Airplane</li>'+
+    (v==='airplane'?'<li style="padding:0;border:none;background:transparent">'+sub+'</li>':'')+
+    '<li class="opt-item'+(v==='train'?' selected':'')+'" onclick="pickQ12(\'train\',this)"><span class="opt-dot"></span>🚂 Train</li>'+
+    '<li class="opt-item'+(v==='road'?' selected':'')+'" onclick="pickQ12(\'road\',this)"><span class="opt-dot"></span>🚗 Road (car / bus / motorcycle)</li>'+
+    '</ul>';
+}
+function pickQ12(val,el){
+  answers.q12=val; answers.q12_airline='';
+  renderQ();
+}
+function pickAirline(val,el){
+  answers.q12_airline=val;
+  document.querySelectorAll('.sub-opt').forEach(function(e){e.classList.remove('selected')});
+  el.classList.add('selected');
+}
+
+// ── Q13 ──
+function rQ13(){
+  var v=answers.q13||'';
+  return '<div class="q-badge">Savol 13 / 17</div>'+
+    '<div class="note-box">Bu savol faqat aeroportlarda ko\'rinadi. Login kodi: '+loginCode+'</div>'+
+    '<div class="q-title">Which airline are you using to LEAVE Uzbekistan?</div>'+
+    '<div class="q-sub">Single answer only (Airport only)</div>'+
+    '<ul class="opt-list">'+
+    '<li class="opt-item'+(v==='uzair'?' selected':'')+'" onclick="pickSingle(\'q13\',\'uzair\',this)"><span class="opt-dot"></span>✈️ Uzbekistan Airways</li>'+
+    '<li class="opt-item'+(v==='other'?' selected':'')+'" onclick="pickSingle(\'q13\',\'other\',this)"><span class="opt-dot"></span>🌐 Other (non-Uzbek) airlines</li>'+
+    '</ul>';
+}
+
+// ── Q14 ──
+function rQ14(){
+  var v=answers.q14||'';
+  var opts=['Less than 25%','25% – 50%','50% – 75%','More than 75%'];
+  return '<div class="q-badge">Savol 14 / 17</div>'+
+    '<div class="q-title">During your working period in Uzbekistan, how much of your monthly income do you estimate you spend here on food, rent, and local transport?</div>'+
+    '<div class="q-sub">Employment — oylik daromadingizning qancha qismini sarflaysiz?</div>'+
+    '<ul class="opt-list">'+
+    opts.map(function(o){
+      return '<li class="opt-item'+(v===o?' selected':'')+'" onclick="pickSingle(\'q14\',\''+o+'\',this)"><span class="opt-dot"></span>'+o+'</li>';
+    }).join('')+'</ul>';
+}
+
+// ── Q15 ──
+function rQ15(){
+  return '<div class="q-badge">Savol 15 / 17</div>'+
+    '<div class="q-title">Please tell me, what is the total sum of money you believe you have spent during your visit to Uzbekistan?</div>'+
+    '<div class="q-sub">Including all types of expenses but excluding the cost of package tour</div>'+
+    '<div class="inline-fields">'+
+    '<input type="number" class="survey-input" style="flex:2" value="'+(answers.q15_sum||'')+'" placeholder="Summa (Cost)..." oninput="answers.q15_sum=this.value">'+
+    '<input type="text" class="survey-input" style="flex:1" value="'+(answers.q15_currency||'')+'" placeholder="Valyuta (USD...)" oninput="answers.q15_currency=this.value">'+
+    '</div>'+
+    '<label class="field-label">Shaxslar soni (Number of persons)</label>'+
+    '<input type="number" class="survey-input" value="'+(answers.q15_persons||'')+'" min="1" placeholder="Shaxslar soni..." oninput="answers.q15_persons=this.value">';
+}
+
+// ── Q16 ──
+var EXP_ROWS=[
+  {n:1, lbl:'Accommodation (the amount of payment is only for the room)'},
+  {n:2, lbl:'Food and drinks'},
+  {n:3, lbl:'International transportation'},
+  {n:4, lbl:'Transport (only within Uzbekistan)'},
+  {n:5, lbl:'Cultural services (entrance fees to museums, performances, films)'},
+  {n:6, lbl:'Sport services, entertainment and rest'},
+  {n:7, lbl:'Educational expenses'},
+  {n:8, lbl:'Tourism services within Uzbekistan (additional package tours within Uzbekistan)'},
+  {n:9, lbl:'Medical services (sanatoriums, health resorts)'},
+  {n:10,lbl:'Fueling and maintenance of own motor transport'},
+  {n:11,lbl:'Purchasing of valuables (precious metals and stones, jewelry, works of art)'},
+  {n:12,lbl:'Shops (Souvenirs, clothes, other consumer goods, Internet, except for valuables)'},
+  {n:13,lbl:'The value of goods purchased for resale abroad',mand:true},
+  {n:14,lbl:'Other expenses'},
+];
+var CURR=['USD','EUR','UZS','RUB','GBP','CNY','KZT','Other'];
+
+function rQ16(){
+  if(!answers.q16) answers.q16={};
+  var isMand16=answers.q4==='exhibition';
+  var rows=EXP_ROWS.map(function(row){
+    var r=answers.q16['r'+row.n]||{};
+    var isMR=isMand16&&row.n===13;
+    return '<div class="exp-row'+(isMR?' mandatory-row':'')+'">'+
+      '<div><div class="exp-num">'+row.n+'.</div><div class="exp-name">'+row.lbl+(isMR?' ⭐':'')+'</div></div>'+
+      '<div class="exp-chk"><input type="checkbox" title="Included in package tour" '+(r.inPackage?'checked':'')+' onchange="setExp(\'r'+row.n+'\',\'inPackage\',this.checked)"></div>'+
+      '<input class="exp-inp'+(isMR?' mand':'')+'" type="number" placeholder="Summa..." value="'+(r.amount||'')+'" oninput="setExp(\'r'+row.n+'\',\'amount\',this.value)">'+
+      '<select class="exp-sel" onchange="setExp(\'r'+row.n+'\',\'currency\',this.value)">'+
+      '<option value="">Valyuta</option>'+
+      CURR.map(function(c){return '<option value="'+c+'"'+(r.currency===c?' selected':'')+'>'+c+'</option>';}).join('')+
+      '</select></div>';
+  }).join('');
+  return '<div class="q-badge">Savol 16 / 17</div>'+
+    '<div class="q-title">Please, indicate which types of expenses did you have in Uzbekistan and approximate cost.</div>'+
+    (isMand16?'<div class="note-box">13-qator majburiy to\'ldirilishi kerak (Biznes maqsadi: ko\'rgazma / qayta sotish uchun tovar)</div>':'')+
+    '<div class="q-sub" style="margin-bottom:12px">☑ = included in the cost of tour package</div>'+
+    '<div class="exp-wrap">'+
+    '<div class="exp-head"><div>Xarajat turi</div><div title="Included in package">☑</div><div>Summa</div><div>Valyuta</div></div>'+
+    rows+'</div>';
+}
+function setExp(row,field,val){
+  if(!answers.q16) answers.q16={};
+  if(!answers.q16[row]) answers.q16[row]={};
+  answers.q16[row][field]=val;
+}
+
+// ── Q17 ──
+var RATING_ITEMS=[
+  'International transport (Uzbek companies)',
+  'Passport control procedures at Uzbek border points',
+  'Hospitality',
+  'Value for money',
+  'Food',
+  'Cleanliness',
+  'Transport (within Uzbekistan)',
+  'Safety',
+  'Culture – Entertainment',
+  'Accommodation',
+  'Health – Treatment',
+  'Communication – Internet – Wi-Fi',
+];
+function rQ17(){
+  if(!answers.q17) answers.q17={};
+  var rows=RATING_ITEMS.map(function(item,i){
+    var v=answers.q17['r'+i];
+    var btns=[1,2,3,4,5,6,7,8,9,10].map(function(n){
+      return '<button class="rating-btn'+(v===n?' picked':'')+'" onclick="setRating('+i+','+n+')">'+n+'</button>';
+    }).join('');
+    return '<div class="rating-row">'+
+      '<div class="rating-label">'+(i+1)+'. '+item+'</div>'+
+      '<div class="rating-nums">'+btns+
+      '<button class="rating-na'+(v==='na'?' picked':'')+'" onclick="setRating('+i+',\'na\')">N/A</button>'+
+      '</div></div>';
+  }).join('');
+  return '<div class="q-badge">Savol 17 / 17</div>'+
+    '<div class="q-title">Please rate your satisfaction with the services received during your visit.</div>'+
+    '<div class="q-sub">Rate on a scale from 1 to 10, where 1 is the lowest and 10 is the highest. Please do not rate services you did not use (select N/A).</div>'+
+    '<div class="rating-section">'+rows+'</div>';
+}
+function setRating(i,val){
+  if(!answers.q17) answers.q17={};
+  answers.q17['r'+i]=val;
+  var rows=document.querySelectorAll('.rating-row');
+  if(rows[i]){
+    var btns=rows[i].querySelectorAll('.rating-btn');
+    btns.forEach(function(b,j){b.classList.toggle('picked',j+1===val)});
+    var na=rows[i].querySelector('.rating-na');
+    if(na) na.classList.toggle('picked',val==='na');
+  }
+}
+
+// ════ HELPERS ════
+function filterC(listId,val){
+  var v=val.toLowerCase();
+  document.querySelectorAll('#'+listId+' .opt-item').forEach(function(el){
+    el.style.display=el.textContent.toLowerCase().indexOf(v)>=0?'':'none';
+  });
+}
+
+function pickSingle(qId,val,el){
+  answers[qId]=val;
+  var list=el.closest('ul');
+  if(list) list.querySelectorAll('.opt-item').forEach(function(e){e.classList.remove('selected')});
+  el.classList.add('selected');
+}
+
+// ⭐ RESTART: to'g'ridan-to'g'ri til oynasiga o'tadi, login/parol so'ralmaydi
+function restart(){
+  // Barcha javoblarni tozalash
+  answers = {};
+  currentQIdx = 0;
+  tourType = 'kirish';
+  // Kirish turizmi uchun amaldagi login kodlardan birini o'rnatamiz (aeroportga tegishli emas)
+  loginCode = '3350';
+  isAirport = AIRPORT_LOGINS.indexOf(loginCode) >= 0; // false
+  // Tilni default (english) qayta tiklash
+  currentLang = 'en';
+  setLang('en');
+  // To'g'ridan to'g'ri til oynasiga o'tish
+  goTo('page-lang');
+}
+
+// ✅ AUTO-REDIRECT: Kirish turizmi tanlanadi, login va parol avtomatik tarzda kiritilib to‘g‘ridan to‘g‘ri til oynasiga o‘tadi
+(function autoRouteToWelcome() {
+  tourType = 'kirish';
+  loginCode = '3350';
+  isAirport = AIRPORT_LOGINS.indexOf(loginCode) !== -1; // false
+  goTo('page-lang');
+  setLang(currentLang);
+})();
+</script>
+</body>
+</html>
