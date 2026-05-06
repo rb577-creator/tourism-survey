@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Tourism Survey — International Travel Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --navy: #0f3a6e;
+  --blue: #1a5fa8;
+  --blue-light: #d8eaf8;
+  --bg: #daeaf8;
+  --white: #ffffff;
+  --text: #1a2f4a;
+  --muted: #5b7a9a;
+  --red: #c0392b;
+  --radius: 28px;
+  --card-shadow: 0 8px 40px rgba(15,58,110,0.13);
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px 40px;
+  position: relative;
+}
+
+.bg-circles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.bg-circle { position: absolute; border-radius: 50%; border: 2px solid rgba(26,95,168,0.10); animation: fc 22s infinite ease-in-out; }
+.bg-circle:nth-child(1){width:220px;height:220px;top:-70px;left:-50px;animation-delay:0s}
+.bg-circle:nth-child(2){width:320px;height:320px;top:8%;right:-90px;animation-delay:-6s}
+.bg-circle:nth-child(3){width:160px;height:160px;bottom:12%;left:4%;animation-delay:-12s}
+.bg-circle:nth-child(4){width:260px;height:260px;bottom:-90px;right:8%;animation-delay:-18s}
+.bg-circle:nth-child(5){width:190px;height:190px;top:45%;left:1%;animation-delay:-9s}
+@keyframes fc{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-18px) scale(1.02)}}
+
+.pages { position: relative; z-index: 1; width: 100%; max-width: 620px; }
+.page { display: none; animation: fadeIn .35s ease; }
+.page.active { display: block; }
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.card { background: var(--white); border-radius: var(--radius); box-shadow: var(--card-shadow); overflow: hidden; }
+
+/* language header & welcome */
+.welcome-header { background: var(--navy); text-align: center; padding: 13px 24px; border-radius: 50px; margin: 0 18px 24px; color: #fff; font-weight: 800; font-size: 12px; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.home-body { padding: 28px 30px 34px; }
+.lang-tabs { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+.lang-tab { padding: 8px 16px; border-radius: 50px; border: 1.5px solid #cdd9e8; background: transparent; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+.lang-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
+.welcome-box { background: #f2f8ff; border-radius: 20px; padding: 28px 24px; margin-bottom: 28px; }
+.welcome-title { font-size: 20px; font-weight: 900; color: var(--navy); margin-bottom: 12px; text-align: center; }
+.welcome-text { font-size: 14px; line-height: 1.65; color: var(--text); text-align: center; margin-bottom: 14px; }
+.welcome-conf { font-size: 12px; font-style: italic; color: var(--muted); text-align: center; }
+.btn-start { width: 100%; padding: 16px; background: var(--blue); color: white; border: none; border-radius: 15px; font-weight: 900; font-size: 16px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 18px rgba(26,95,168,0.28); transition: all 0.15s; }
+.btn-start:hover { transform: translateY(-2px); }
+
+/* survey header */
+.survey-header { background: var(--navy); color: #fff; padding: 18px 26px; display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.survey-type-label { font-weight: 800; font-size: 12px; letter-spacing: 1.5px; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 40px; }
+.progress-wrap { flex: 1; }
+.prog-bg { background: rgba(255,255,255,0.25); border-radius: 10px; height: 6px; }
+.prog-fill { background: #fff; border-radius: 10px; height: 6px; transition: width .4s ease; }
+.prog-lbl { font-size: 11px; margin-top: 4px; color: rgba(255,255,255,0.7); text-align: right; }
+
+.survey-body { padding: 26px 28px 12px; }
+.q-badge { display: inline-block; background: var(--blue-light); color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: 1.5px; padding: 4px 12px; border-radius: 50px; margin-bottom: 12px; text-transform: uppercase; }
+.q-title { font-size: 18px; font-weight: 800; color: var(--text); line-height: 1.4; margin-bottom: 8px; }
+.q-sub { font-size: 12px; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
+
+/* common inputs */
+.field-input, .survey-input, .search-input { width: 100%; padding: 13px 16px; border: 2px solid #e0eaf5; border-radius: 14px; font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--text); background: #f7fafd; outline: none; margin-bottom: 12px; }
+.field-input:focus, .survey-input:focus, .search-input:focus { border-color: var(--blue); background: #fff; }
+.opt-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.opt-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 2px solid #e0eaf5; border-radius: 14px; cursor: pointer; font-weight: 600; font-size: 14px; color: var(--text); background: white; transition: all 0.16s; }
+.opt-item:hover, .checkbox-item:hover { border-color: var(--blue); background: #f0f7ff; }
+.opt-item.selected, .checkbox-item.selected { border-color: var(--blue); background: #e8f2ff; color: var(--blue); }
+.opt-dot { width: 19px; height: 19px; border-radius: 50%; border: 2px solid #cdd9e8; display: flex; align-items: center; justify-content: center; }
+.opt-item.selected .opt-dot { background: var(--blue); border-color: var(--blue); }
+.opt-item.selected .opt-dot::after { content: ''; width: 7px; height: 7px; background: white; border-radius: 50%; }
+.checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+.checkbox-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 2px solid #e0eaf5; border-radius: 14px; cursor: pointer; font-weight: 600; font-size: 14px; background: white; }
+.checkbox-item.selected .checkbox-sq { background: var(--blue); border-color: var(--blue); }
+.checkbox-item.selected .checkbox-sq::after { content: '✓'; color: white; font-size: 12px; }
+.checkbox-sq { width: 19px; height: 19px; border-radius: 5px; border: 2px solid #cdd9e8; display: flex; align-items: center; justify-content: center; }
+.inline-fields { display: flex; gap: 12px; flex-wrap: wrap; }
+.inline-fields .survey-input, .inline-fields select { flex: 1; }
+.exp-wrap { border-radius: 16px; overflow-x: auto; border: 2px solid #e0eaf5; background: white; }
+.exp-head { display: grid; grid-template-columns: 2fr 40px 110px 100px; gap: 8px; background: var(--navy); color: white; padding: 12px 12px; font-size: 11px; font-weight: 700; }
+.exp-row { display: grid; grid-template-columns: 2fr 40px 110px 100px; gap: 8px; padding: 10px 12px; align-items: center; border-top: 1px solid #eef3fc; }
+.exp-name { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.4; }
+.exp-chk { display: flex; align-items: center; justify-content: center; }
+.exp-inp, .exp-sel { width: 100%; padding: 8px 6px; border: 1.5px solid #e0eaf5; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 12px; background: #f9fbfe; }
+.exp-inp:disabled, .exp-sel:disabled { background: #eef2f5; cursor: not-allowed; }
+.your-currency { font-size: 12px; font-weight: 600; margin-top: 6px; }
+.yn-group { display: flex; gap: 12px; margin: 12px 0; }
+.yn-btn { flex: 1; padding: 14px; border: 2px solid #e0eaf5; border-radius: 14px; font-weight: 800; cursor: pointer; background: #f7fafd; }
+.yn-btn.selected { border-color: var(--blue); background: var(--blue); color: white; }
+.survey-nav { display: flex; gap: 12px; padding: 18px 28px 28px; }
+.btn-prev, .btn-next { padding: 14px; border-radius: 14px; font-weight: 800; font-size: 14px; cursor: pointer; transition: 0.1s; }
+.btn-prev { flex: 1; background: transparent; border: 2px solid #d0dde8; color: var(--text); }
+.btn-prev:hover { border-color: var(--blue); color: var(--blue); }
+.btn-next { flex: 2.5; background: var(--blue); border: none; color: white; box-shadow: 0 4px 14px rgba(26,95,168,.25); }
+.btn-next:hover { transform: translateY(-1px); }
+.val-err { background: #fff0f0; border: 1.5px solid #f5c2c2; color: var(--red); border-radius: 11px; padding: 10px 14px; font-size: 12px; font-weight: 700; margin: 0 28px 8px; display: none; }
+.val-err.show { display: block; }
+.end-card { padding: 48px 30px; text-align: center; }
+.end-icon { font-size: 54px; margin-bottom: 16px; }
+.restart-btn { background: var(--blue); color: white; border: none; padding: 14px 28px; border-radius: 30px; font-weight: 800; cursor: pointer; margin-top: 12px; }
+.country-list { max-height: 240px; overflow-y: auto; border: 2px solid #e0eaf5; border-radius: 14px; background: white; padding: 6px; margin-top: 5px; }
+@media(max-width:550px){ .exp-head, .exp-row { grid-template-columns: 1.5fr 35px 95px 85px; } .survey-body { padding: 18px; } }
+</style>
+</head>
+<body>
+<div class="bg-circles"><div class="bg-circle"></div><div class="bg-circle"></div><div class="bg-circle"></div><div class="bg-circle"></div><div class="bg-circle"></div></div>
+<div class="pages">
+  <!-- HOME + LANGUAGE SELECTION -->
+  <div class="page" id="page-home">
+    <div class="welcome-header">🌍 UZBEKISTAN TOURISM • OUTBOUND SURVEY</div>
+    <div class="card"><div class="home-body">
+      <div class="lang-tabs"><button class="lang-tab" id="tab-uz" onclick="setLanguage('uz')">🇺🇿 O‘zbekcha</button><button class="lang-tab" id="tab-ru" onclick="setLanguage('ru')">🇷🇺 Русский</button></div>
+      <div class="welcome-box"><div class="welcome-title" id="welcome-title">DEAR TRAVELER,</div>
+        <p class="welcome-text" id="welcome-text">We kindly ask you to participate in this survey, which is carried out to study tourism development and compile the tourism satellite account of Uzbekistan. We ask you to assist us by answering all questions included in this questionnaire.</p>
+        <p class="welcome-conf" id="welcome-conf">Confidentiality of your responses is guaranteed by the Law of the Republic of Uzbekistan "On Official Statistics".</p>
+      </div>
+      <button class="btn-start" id="start-btn" onclick="startSurvey()">START SURVEY</button>
+    </div></div>
+  </div>
+
+  <!-- SURVEY MAIN -->
+  <div class="page" id="page-survey">
+    <div class="card"><div class="survey-header"><div class="survey-type-label">✈️ OUTBOUND TOURISM</div><div class="progress-wrap"><div class="prog-bg"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div><div class="prog-lbl" id="prog-lbl">0 / 0</div></div></div>
+      <div class="survey-body" id="survey-body"></div><div class="val-err" id="val-err">Please select or fill required field.</div>
+      <div class="survey-nav"><button class="btn-prev" id="btn-prev" onclick="prevQuestion()">← Back</button><button class="btn-next" id="btn-next" onclick="nextQuestion()">Next →</button></div>
+    </div>
+  </div>
+
+  <!-- COMPLETE -->
+  <div class="page" id="page-success"><div class="card"><div class="end-card"><div class="end-icon">✅</div><h2 class="end-title" id="end-title">Thank you!</h2><p class="end-sub" id="end-text">Your answers have been successfully saved. We greatly appreciate your participation.</p><button class="restart-btn" onclick="restartSurvey()">🏠 Back to home</button></div></div></div>
+</div>
+
+<script>
+// ---------- MULTI-LANGUAGE DICTIONARY (UZ / RU) ----------
+const langData = {
+  uz: {
+    welcome_title: "HURMATLI SAYOHATCHI,",
+    welcome_text: "Sizni turizmni rivojlantirish va O‘zbekistonning turizm hisobini yuritish maqsadida o‘tkazilayotgan so‘rovnomada qatnashishga taklif qilamiz. Iltimos, barcha savollarga javob berib, bizga yordam bering.",
+    welcome_conf: "Javoblaringiz maxfiyligi “Rasmiy statistika to‘g‘risida”gi Qonun bilan kafolatlanadi.",
+    start: "SO‘ROVNOMANI BOSHLASH",
+    back: "Ortga",
+    next: "Keyingi",
+    finish: "Tugatish ✓",
+    error: "Iltimos, javobni tanlang yoki to‘ldiring.",
+    error_nights: "Umumiy tunlar soni chet eldagi tunlardan kam bo'lmasligi kerak.",
+    currency_placeholder: "Summa",
+    q1_title: "Qaysi davlatdan kelmoqdasiz? (Doimiy yashash mamlakati)",
+    q2_title: "Chet elga sayohatingizning asosiy maqsadi nima?",
+    q3_title: "Ish safarining asosiy maqsadi qaysi?",
+    q4_title: "Chet elda necha kecha qoldingiz?",
+    q5_title: "Chet elda qaysi turdagi turar joydan asosan foydalandingiz?",
+    q6_title: "Chet elga paketli tur orqali borganmisiz?",
+    q7_title: "Paketli tur jami necha kechani qamrab oldi? (umumiy va tashrif buyurilgan mamlakatda)",
+    q8_title: "Paketli tur necha kishini o‘z ichiga olgan?",
+    q9_title: "Ushbu tur uchun qancha to‘ladingiz?",
+    q10_title: "O‘zbekistondan CHIQISHDA qanday transport vositasidan foydalandingiz?",
+    q11_title: "O‘zbekistonga QAYTISHDA (kelishda) qanday transportdan foydalandingiz?",
+    q12_title: "Ish faoliyatingiz davomida oylik daromadingizning qancha qismini oziq-ovqat, ijara va mahalliy transportga sarflaysiz?",
+    q13_title: "Paketli tur narxidan tashqari, ushbu sayohat davomida qancha mablag‘ sarfladingiz?",
+    q14_title: "Chet elda qilgan xarajatlaringiz turlari va taxminiy summasi",
+    // options and additional will be used in dynamic generation
+  },
+  ru: {
+    welcome_title: "УВАЖАЕМЫЙ ПУТЕШЕСТВЕННИК,",
+    welcome_text: "Мы сердечно просим вас принять участие в этом опросе, который проводится для изучения развития туризма и составления туристического сателлитного счета Узбекистана.",
+    welcome_conf: "Конфиденциальность ответов гарантируется Законом «Об официальной статистике».",
+    start: "НАЧАТЬ ОПРОС",
+    back: "Назад",
+    next: "Далее",
+    finish: "Завершить ✓",
+    error: "Пожалуйста, выберите или заполните ответ.",
+    error_nights: "Общее количество ночей не может быть меньше ночей в посещенной стране.",
+    currency_placeholder: "Сумма",
+    q1_title: "Из какой страны вы прибываете? (страна постоянного проживания)",
+    q2_title: "Какова основная цель вашей поездки за рубеж?",
+    q3_title: "Какова основная цель вашей бизнес-поездки?",
+    q4_title: "Сколько ночей вы провели за границей?",
+    q5_title: "Каким типом жилья вы преимущественно пользовались за границей?",
+    q6_title: "Совершили ли вы поездку за рубеж по турпакету?",
+    q7_title: "Сколько ночей покрывал турпакет всего и из них в посещенной стране?",
+    q8_title: "Сколько человек (включая вас) было в турпакете?",
+    q9_title: "Сколько вы заплатили за этот тур?",
+    q10_title: "Каким транспортом вы ВЫЕХАЛИ из Узбекистана?",
+    q11_title: "Каким транспортом вы ПРИБЫЛИ обратно в Узбекистан?",
+    q12_title: "Какую часть месячного дохода вы тратите за границей на еду, аренду и местный транспорт?",
+    q13_title: "Общая сумма расходов во время поездки (исключая турпакет)?",
+    q14_title: "Пожалуйста, укажите виды расходов за границей и их примерную стоимость.",
+  }
+};
+
+let currentLang = 'uz';   // default uz
+let currentIdx = 0;
+let answers = {};
+let seqQuestions = [];
+
+// Country list for Q1 (with search)
+const countryOptions = ["Kazakhstan","China","Turkey","Netherlands","South Korea","Georgia","Malaysia","Kyrgyzstan","Russia","France","Italy","Spain","Israel","Indonesia","Tajikistan","Japan","United Kingdom","Iran","Armenia","Ukraine","Turkmenistan","United States","Germany","India","Azerbaijan","Belarus","Vietnam","Other"];
+
+const CURRENCIES = ['USD','EUR','UZS','RUB','GBP','CNY','KZT','Other'];
+
+// Purpose options
+const purposeList = [
+  {val:'holiday', uz:'Dam olish, sayohat va ko‘ngilochar', ru:'Отдых, туризм, развлечения'},
+  {val:'friends', uz:'Do‘stlar va qarindoshlarni ziyorat', ru:'Посещение друзей и родственников'},
+  {val:'business', uz:'Ish va kasbiy (uchrashuv, konferensiya, trening)', ru:'Бизнес и профессиональные (встречи, конференции)'},
+  {val:'education', uz:'Taʼlim va qisqa kurslar', ru:'Образование и краткосрочные курсы'},
+  {val:'health', uz:'Sog‘liqni saqlash va davolanish', ru:'Здоровье и лечение'},
+  {val:'religion', uz:'Diniy va ziyorat', ru:'Религия и паломничество'},
+  {val:'shopping', uz:'Xarid qilish', ru:'Покупки'},
+  {val:'employment', uz:'Chet elda ishlash / mehnat faoliyati', ru:'Работа по найму за границей'},
+  {val:'other', uz:'Boshqa', ru:'Другое'}
+];
+
+// Business sub
+const businessSub = [
+  {val:'exhibition', uz:"Ko‘rgazma / qayta sotish uchun tovarlar sotib olish", ru:"Выставка / покупка товаров для перепродажи"},
+  {val:'corporate', uz:"Korporativ uchrashuv / seminar", ru:"Корпоративная встреча / семинар"},
+  {val:'incentive', uz:"Biznes tomonidan tashkil etilgan incentive tur", ru:"Инсентив-тур"},
+  {val:'conference', uz:"Konferensiya / kongress / forum", ru:"Конференция / конгресс / форум"}
+];
+
+const accommodationTypes = [
+  {val:'hotel', uz:"Mehmonxona, hostel (pullik)", ru:"Отель, хостел (платно)"},
+  {val:'rented', uz:"Ijara kvartira / uy (Airbnb)", ru:"Арендованная квартира (Airbnb)"},
+  {val:'friends', uz:"Do‘stlar / qarindoshlarda (bepul)", ru:"У друзей/родственников (бесплатно)"},
+  {val:'own', uz:"Shaxsiy mulk", ru:"Собственная недвижимость"},
+  {val:'sanatorium', uz:"Sanatoriy / kurort", ru:"Санаторий / курорт"},
+  {val:'camping', uz:"Kemping / avtoturargoh", ru:"Кемпинг"},
+  {val:'other_paid', uz:"Boshqa pullik turar joy", ru:"Другое платное жилье"}
+];
+
+// Helper: dynamic get text
+function t(key, fallback='') { return (langData[currentLang] && langData[currentLang][key]) ? langData[currentLang][key] : (fallback || key); }
+
+function setLanguage(lang) { currentLang = lang; document.querySelectorAll('.lang-tab').forEach(btn=>btn.classList.remove('active')); document.getElementById(`tab-${lang}`).classList.add('active'); document.getElementById('welcome-title').innerText = langData[lang].welcome_title; document.getElementById('welcome-text').innerText = langData[lang].welcome_text; document.getElementById('welcome-conf').innerText = langData[lang].welcome_conf; document.getElementById('start-btn').innerText = langData[lang].start; }
+
+function buildSequence() {
+  let seq = ['q1', 'q2'];
+  if (answers.q2 === 'business') seq.push('q3');
+  seq.push('q4');
+  let nightsZero = (answers.q4_nights === '0' || answers.q4_nights === 0);
+  if (!nightsZero) seq.push('q5', 'q6');
+  if (answers.q6 === 'yes' && !nightsZero) seq.push('q7', 'q8', 'q9');
+  seq.push('q10', 'q11');
+  if (answers.q2 === 'employment') seq.push('q12');
+  seq.push('q13', 'q14');
+  return seq;
+}
+
+function renderSurvey() {
+  if (!seqQuestions.length) seqQuestions = buildSequence();
+  let total = seqQuestions.length;
+  let percent = ((currentIdx+1)/total)*100;
+  document.getElementById('prog-fill').style.width = percent+'%';
+  document.getElementById('prog-lbl').innerHTML = `${currentIdx+1} / ${total}`;
+  let nextBtn = document.getElementById('btn-next');
+  nextBtn.innerText = (currentIdx === total-1) ? (currentLang==='uz'?'Tugatish ✓':'Завершить ✓') : (currentLang==='uz'?'Keyingi →':'Далее →');
+  document.getElementById('btn-prev').innerText = t('back');
+  let qid = seqQuestions[currentIdx];
+  let html = generateQuestionHTML(qid);
+  document.getElementById('survey-body').innerHTML = html;
+  attachDynamicEvents();
+  document.getElementById('val-err').classList.remove('show');
+  window.scrollTo(0,0);
+}
+
+function generateQuestionHTML(qid) {
+  if (qid === 'q1') return q1Render();
+  if (qid === 'q2') return q2Render();
+  if (qid === 'q3') return q3Render();
+  if (qid === 'q4') return q4Render();
+  if (qid === 'q5') return q5Render();
+  if (qid === 'q6') return q6Render();
+  if (qid === 'q7') return q7Render();
+  if (qid === 'q8') return q8Render();
+  if (qid === 'q9') return q9Render();
+  if (qid === 'q10') return transportRender('q10','LEAVE');
+  if (qid === 'q11') return transportRender('q11','ARRIVE');
+  if (qid === 'q12') return q12Render();
+  if (qid === 'q13') return q13Render();
+  if (qid === 'q14') return q14Render();
+  return '<div>Error</div>';
+}
+
+function q1Render() {
+  let selected = answers.q1 || '';
+  return `<div class="q-badge">1/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q1_title:langData.ru.q1_title}</div><div class="search-wrap"><input type="text" class="search-input" id="countrySearch" placeholder="${currentLang==='uz'?'Davlatni qidirish...':'Поиск страны...'}" oninput="filterCountryList()"></div><div class="country-list" id="countryList">${countryOptions.map(c=>`<div class="opt-item ${selected===c?'selected':''}" onclick="selectCountry('${c.replace(/'/g,"\\'")}')"><span class="opt-dot"></span>${c}</div>`).join('')}</div>${answers.q1 === 'Other' ? `<input type="text" class="survey-input" placeholder="${currentLang==='uz'?'Iltimos, davlatni yozing':'Укажите страну'}" value="${answers.q1_other||''}" oninput="answers.q1_other=this.value; answers.q1='Other';">`:''}`;
+}
+function selectCountry(c) { answers.q1 = c; if(c!=='Other') delete answers.q1_other; renderSurvey(); }
+function filterCountryList() { let val = document.getElementById('countrySearch')?.value.toLowerCase(); if(!val) return; document.querySelectorAll('#countryList .opt-item').forEach(el=>{ el.style.display = el.innerText.toLowerCase().includes(val) ? '' : 'none'; }); }
+
+function q2Render() {
+  let selected = answers.q2 || '';
+  return `<div class="q-badge">2/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q2_title:langData.ru.q2_title}</div><ul class="opt-list">${purposeList.map(p=>`<li class="opt-item ${selected===p.val?'selected':''}" onclick="selectPurpose('${p.val}')"><span class="opt-dot"></span>${currentLang==='uz'?p.uz:p.ru}</li>`).join('')}</ul>`;
+}
+function selectPurpose(val) { answers.q2 = val; delete answers.q3; renderSurvey(); }
+
+function q3Render() {
+  let selected = answers.q3 || '';
+  return `<div class="q-badge">3/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q3_title:langData.ru.q3_title}</div><ul class="opt-list">${businessSub.map(b=>`<li class="opt-item ${selected===b.val?'selected':''}" onclick="answers.q3='${b.val}';renderSurvey()"><span class="opt-dot"></span>${currentLang==='uz'?b.uz:b.ru}</li>`).join('')}</ul>`;
+}
+function q4Render() {
+  let nights = answers.q4_nights !== undefined ? answers.q4_nights : '';
+  let zeroChecked = (answers.q4_nights === '0');
+  return `<div class="q-badge">4/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q4_title:langData.ru.q4_title}</div><input type="number" class="survey-input" value="${nights}" min="0" placeholder="${currentLang==='uz'?'Keсa soni':'Количество ночей'}" oninput="answers.q4_nights=this.value; if(this.value!=='0') delete answers.skipAccom; renderSurvey();"><div class="opt-item" style="margin-top:6px;" onclick="if(answers.q4_nights!=='0'){answers.q4_nights='0'; renderSurvey();}"><span class="opt-sq" style="border-radius:5px;width:19px;height:19px;border:2px solid #cdd9e8;"></span>${currentLang==='uz'?'0 kecha (o‘sha kuni qaytish) → keyingi savollar o‘tkazib yuboriladi':'0 ночей → переход к вопросам о транспорте'}</div>`;
+}
+
+function q5Render() {
+  let selected = answers.q5 || '';
+  return `<div class="q-badge">5/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q5_title:langData.ru.q5_title}</div><ul class="opt-list">${accommodationTypes.map(a=>`<li class="opt-item ${selected===a.val?'selected':''}" onclick="answers.q5='${a.val}';renderSurvey()"><span class="opt-dot"></span>${currentLang==='uz'?a.uz:a.ru}</li>`).join('')}</ul>`;
+}
+function q6Render() {
+  let selected = answers.q6 || '';
+  return `<div class="q-badge">6/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q6_title:langData.ru.q6_title}</div><div class="yn-group"><button class="yn-btn ${selected==='yes'?'selected':''}" onclick="answers.q6='yes';renderSurvey()">✅ ${currentLang==='uz'?'Ha':'Да'}</button><button class="yn-btn ${selected==='no'?'selected':''}" onclick="answers.q6='no';renderSurvey()">❌ ${currentLang==='uz'?'Yo‘q':'Нет'}</button></div>`;
+}
+function q7Render() {
+  let total = answers.q7_total || ''; let abroad = answers.q7_abroad || '';
+  return `<div class="q-badge">7/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q7_title:langData.ru.q7_title}</div><label>${currentLang==='uz'?'Jami kechalar':'Всего ночей'}</label><input type="number" class="survey-input" value="${total}" oninput="answers.q7_total=this.value"><label>${currentLang==='uz'?'Tashrif buyurilgan mamlakatdagi kechalar':'Ночей в посещенной стране'}</label><input type="number" class="survey-input" value="${abroad}" oninput="answers.q7_abroad=this.value">`;
+}
+function q8Render() { return `<div class="q-badge">8/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q8_title:langData.ru.q8_title}</div><input type="number" class="survey-input" value="${answers.q8_persons||''}" oninput="answers.q8_persons=this.value">`; }
+function q9Render() { return `<div class="q-badge">9/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q9_title:langData.ru.q9_title}</div><div class="inline-fields"><input type="number" class="survey-input" value="${answers.q9_amount||''}" placeholder="${t('currency_placeholder')}" oninput="answers.q9_amount=this.value"><select class="exp-sel" onchange="answers.q9_currency=this.value">${CURRENCIES.map(c=>`<option ${answers.q9_currency===c?'selected':''} value="${c}">${c}</option>`).join('')}</select></div>`; }
+function transportRender(qid, direction) {
+  let val = answers[qid] || '';
+  let airline = answers[`${qid}_airline`] || '';
+  let isAir = val === 'airplane';
+  return `<div class="q-badge">${qid==='q10'?'10/14':'11/14'}</div><div class="q-title">${currentLang==='uz'?(qid==='q10'?langData.uz.q10_title:langData.uz.q11_title):(qid==='q10'?langData.ru.q10_title:langData.ru.q11_title)}</div><ul class="opt-list"><li class="opt-item ${val==='airplane'?'selected':''}" onclick="selectTransport('${qid}','airplane')"><span class="opt-dot"></span>✈️ Airplane</li>${isAir?`<div class="sub-opts" style="margin-left:30px;margin-top:5px;"><div class="opt-item ${airline==='uzbek'?'selected':''}" onclick="answers['${qid}_airline']='uzbek';renderSurvey()"><span class="opt-dot"></span>🇺🇿 Uzbekistan Airways</div><div class="opt-item ${airline==='other'?'selected':''}" onclick="answers['${qid}_airline']='other';renderSurvey()"><span class="opt-dot"></span>🌍 Boshqa aviakompaniyalar</div></div>`:''}<li class="opt-item ${val==='train'?'selected':''}" onclick="selectTransport('${qid}','train')"><span class="opt-dot"></span>🚂 Train</li><li class="opt-item ${val==='road'?'selected':''}" onclick="selectTransport('${qid}','road')"><span class="opt-dot"></span>🚗 Road (car/bus/moto)</li></ul>`;
+}
+function selectTransport(qid, mode) { answers[qid] = mode; if(mode!=='airplane') delete answers[`${qid}_airline`]; renderSurvey(); }
+function q12Render() {
+  let opts = ['Less than 25%','25% – 50%','50% – 75%','More than 75%']; let uzOpts = ['25% dan kam','25% – 50%','50% – 75%','75% dan ortiq']; let ruOpts = ['Менее 25%','25% – 50%','50% – 75%','Более 75%'];
+  let selected = answers.q12 || '';
+  let arr = currentLang==='uz'?uzOpts:(currentLang==='ru'?ruOpts:opts);
+  return `<div class="q-badge">12/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q12_title:langData.ru.q12_title}</div><ul class="opt-list">${opts.map((o,i)=>`<li class="opt-item ${selected===o?'selected':''}" onclick="answers.q12='${o}';renderSurvey()"><span class="opt-dot"></span>${arr[i]}</li>`).join('')}</ul>`;
+}
+function q13Render() {
+  return `<div class="q-badge">13/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q13_title:langData.ru.q13_title}</div><div class="inline-fields"><input type="number" class="survey-input" value="${answers.q13_sum||''}" placeholder="${t('currency_placeholder')}" oninput="answers.q13_sum=this.value"><select class="exp-sel" onchange="answers.q13_currency=this.value">${CURRENCIES.map(c=>`<option ${answers.q13_currency===c?'selected':''}>${c}</option>`).join('')}</select></div><label>${currentLang==='uz'?'Shu summa qancha odamga tegishli?':'На сколько человек эта сумма?'}</label><input type="number" class="survey-input" value="${answers.q13_persons||''}" oninput="answers.q13_persons=this.value">`;
+}
+// EXPENSE TABLE
+const expenseRows = [
+  {id:1, label_uz:"Turar joy (faqat xona to‘lovi)", label_ru:"Проживание (оплата номера)", hasCheck:true},
+  {id:2, label_uz:"Oziq-ovqat va ichimliklar", label_ru:"Еда и напитки", hasCheck:true},
+  {id:3, label_uz:"Xalqaro transport", label_ru:"Международный транспорт", hasCheck:true},
+  {id:4, label_uz:"Mahalliy transport (chet elda)", label_ru:"Местный транспорт (за границей)", hasCheck:true},
+  {id:5, label_uz:"Madaniy xizmatlar (muzeylar, tomoshalar)", label_ru:"Культурные услуги", hasCheck:true},
+  {id:6, label_uz:"Sport va ko‘ngilochar xizmatlar", label_ru:"Спорт, развлечения", hasCheck:true},
+  {id:7, label_uz:"Taʼlim xarajatlari", label_ru:"Образовательные расходы", hasCheck:false},
+  {id:8, label_uz:"Tibbiy xizmatlar (sanatoriylar)", label_ru:"Медицинские услуги", hasCheck:false},
+  {id:9, label_uz:"Shaxsiy avtomobil uchun yoqilg‘i va texnik xizmat", label_ru:"Топливо и обслуживание авто", hasCheck:false},
+  {id:10,label_uz:"Qimmatbaho buyumlar sotib olish (zargarlik, sanʼat)", label_ru:"Покупка ценностей", hasCheck:false},
+  {id:11,label_uz:"Sovg‘alar, kiyim-kechak, Internet va boshqa tovarlar", label_ru:"Сувениры, одежда, товары", hasCheck:false},
+  {id:12,label_uz:"O‘zbekistonda qayta sotish uchun sotib olingan tovarlar ⭐", label_ru:"Товары для перепродажи в Узбекистане ⭐", hasCheck:false, mandatoryExhibition:true},
+  {id:13,label_uz:"Boshqa xarajatlar", label_ru:"Прочие расходы", hasCheck:false, extraEmployment:true}
+];
+function q14Render() {
+  if(!answers.q14_exp) answers.q14_exp = {};
+  let isEmployment = (answers.q2 === 'employment');
+  let isExhibition = (answers.q3 === 'exhibition');
+  let rowsHtml = expenseRows.map(row=>{
+    let data = answers.q14_exp[`row${row.id}`] || {};
+    let disabled = data.inPackage ? true : false;
+    let extraNote = (row.extraEmployment && isEmployment) ? ` <span style="color:#b33;">(utility bills, taxes, work permit)</span>` : '';
+    let label = currentLang==='uz' ? row.label_uz+extraNote : row.label_ru+extraNote;
+    let mandatoryClass = (row.mandatoryExhibition && isExhibition) ? 'mandatory-row' : '';
+    return `<div class="exp-row ${mandatoryClass}" data-row="${row.id}">
+      <div class="exp-name">${row.id}. ${label}</div>
+      <div class="exp-chk">${row.hasCheck ? `<input type="checkbox" ${data.inPackage?'checked':''} onchange="toggleExpensePackage(${row.id}, this.checked)">` : ''}</div>
+      <input class="exp-inp" type="number" placeholder="Sum" value="${data.amount||''}" ${disabled?'disabled':''} oninput="updateExpense(${row.id},'amount',this.value)">
+      <select class="exp-sel" ${disabled?'disabled':''} onchange="updateExpense(${row.id},'currency',this.value)">${CURRENCIES.map(c=>`<option ${data.currency===c?'selected':''} value="${c}">${c}</option>`).join('')}</select>
+    </div>`;
+  }).join('');
+  return `<div class="q-badge">14/14</div><div class="q-title">${currentLang==='uz'?langData.uz.q14_title:langData.ru.q14_title}</div><div class="q-sub">☑ Agar xarajat turpaket narxiga kiritilgan bo‘lsa belgilang (summa bloklanadi)</div><div class="exp-wrap"><div class="exp-head"><div>Xarajat turi</div><div>☑</div><div>Summa</div><div>Valyuta</div></div>${rowsHtml}</div>`;
+}
+function updateExpense(rowId, field, val) { if(!answers.q14_exp) answers.q14_exp={}; let key=`row${rowId}`; if(!answers.q14_exp[key]) answers.q14_exp[key]={}; answers.q14_exp[key][field]=val; }
+function toggleExpensePackage(rowId, checked) { let key=`row${rowId}`; if(!answers.q14_exp[key]) answers.q14_exp[key]={}; answers.q14_exp[key].inPackage = checked; if(checked) { answers.q14_exp[key].amount=''; answers.q14_exp[key].currency=''; } renderSurvey(); }
+function attachDynamicEvents() {
+  window.filterCountryList = filterCountryList;
+  window.selectCountry = selectCountry;
+  window.selectPurpose = selectPurpose;
+  window.selectTransport = selectTransport;
+  window.updateExpense = updateExpense;
+  window.toggleExpensePackage = toggleExpensePackage;
+}
+// Validation & navigation
+function validateCurrent() {
+  let qid = seqQuestions[currentIdx];
+  if(qid === 'q1') { if(!answers.q1) return false; if(answers.q1==='Other' && !answers.q1_other) return false; return true; }
+  if(qid === 'q2') return !!answers.q2;
+  if(qid === 'q3') return !!answers.q3;
+  if(qid === 'q4') { let n = answers.q4_nights; if(n===undefined || n==='') return false; return true; }
+  if(qid === 'q5') return !!answers.q5;
+  if(qid === 'q6') return !!answers.q6;
+  if(qid === 'q7') { if(!answers.q7_total || !answers.q7_abroad) return false; if(Number(answers.q7_abroad) > Number(answers.q7_total)) { showErr(t('error_nights')); return false; } return true; }
+  if(qid === 'q8') return answers.q8_persons && answers.q8_persons>0;
+  if(qid === 'q9') return answers.q9_amount && answers.q9_currency;
+  if(qid === 'q10' || qid==='q11') { if(!answers[qid]) return false; if(answers[qid]==='airplane' && !answers[`${qid}_airline`]) return false; return true; }
+  if(qid === 'q12') return !!answers.q12;
+  if(qid === 'q13') return answers.q13_sum && answers.q13_currency && answers.q13_persons;
+  if(qid === 'q14') {
+    if(answers.q3==='exhibition') { let row12 = answers.q14_exp?.row12; if(!row12 || !row12.amount) { showErr('Exhibition: Please fill row 12 (goods for resale) amount.'); return false; } }
+    return true;
+  }
+  return true;
+}
+function showErr(msg) { let el=document.getElementById('val-err'); el.innerText=msg||t('error'); el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2800);}
+function nextQuestion() { if(!validateCurrent()) return; if(currentIdx < seqQuestions.length-1) { currentIdx++; renderSurvey(); } else { goToSuccess(); } }
+function prevQuestion() { if(currentIdx>0){ currentIdx--; renderSurvey(); } }
+function goToSuccess() { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById('page-success').classList.add('active'); }
+function startSurvey() { answers={}; currentIdx=0; seqQuestions=[]; answers.q4_nights=''; renderSurvey(); goTo('page-survey'); }
+function goTo(pageId) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); }
+function restartSurvey() { goTo('page-home'); setLanguage('uz'); answers={}; currentIdx=0; seqQuestions=[]; }
+setLanguage('uz');
+goTo('page-home');
+window.nextQuestion=nextQuestion; window.prevQuestion=prevQuestion; window.startSurvey=startSurvey; window.restartSurvey=restartSurvey;
+window.selectTransport=selectTransport;
+</script>
+</body>
+</html>
